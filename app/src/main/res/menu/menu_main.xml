@@ -13,5 +13,10 @@
         android:orderInCategory="100"
         android:title="email"
         app:showAsAction="never"/>
+    <item
+        android:id="@+id/btnSignIn"
+        android:orderInCategory="100"
+        android:title="login"
+        app:showAsAction="never"/>
 
 </menu>

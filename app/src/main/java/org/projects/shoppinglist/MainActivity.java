@@ -1,6 +1,9 @@
 package org.projects.shoppinglist;
 
 import android.content.ClipData;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
@@ -97,33 +100,32 @@ public class MainActivity extends AppCompatActivity {
         */
 
         final Button removedButton = (Button) findViewById(R.id.removedButton);
-
         removedButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //if(index != null)
+                    final int index = listView.getCheckedItemPosition();
+                    getMyAdapter().getRef(index).setValue(null);
+                //if( getMyAdapter().getRef(index).setValue(null))
+                    //bag.remove(name);
+                    //getMyAdapter().notifyDataSetChanged();
+                    Snackbar snackbar = Snackbar
+                            .make(listView, "Item Deleted", Snackbar.LENGTH_LONG)
+                            .setAction("UNDO", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    getMyAdapter().notifyDataSetChanged();
+                                    Snackbar snackbar = Snackbar.make(listView, "Item restored!", Snackbar.LENGTH_SHORT);
+                                    snackbar.show();
+                                }
+                            });
 
-                final int index = listView.getCheckedItemPosition();
-                getMyAdapter().getRef(index).setValue(null);
-                //bag.remove(name);
-                //The next line is needed in order to say to the ListView
-                //that the data has changed - we have added stuff now!
-                //getMyAdapter().notifyDataSetChanged();
-                Snackbar snackbar = Snackbar
-                        .make(listView, "Item Deleted", Snackbar.LENGTH_LONG)
-                        .setAction("UNDO", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                getMyAdapter().notifyDataSetChanged();
-                                Snackbar snackbar = Snackbar.make(listView, "Item restored!", Snackbar.LENGTH_SHORT);
-                                snackbar.show();
-                            }
-                        });
-
-                snackbar.show();
+                    snackbar.show();
+                }
 
 
-            }
-        });
+
+            });
 
 
 
@@ -134,6 +136,7 @@ public class MainActivity extends AppCompatActivity {
 
                 EditText editText = (EditText) findViewById(R.id.productname);
                 EditText number = (EditText) findViewById(R.id.number);
+
 
               //  if(name != null & q != 0){
 
@@ -197,14 +200,49 @@ public class MainActivity extends AppCompatActivity {
 
 
             case R.id.action_settings:
-               onDestroy();
-                return true;
+
+                if(p.getName() != null) {
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+                    alertDialogBuilder.setMessage("Are you sure, You wanted to make decision");
+                    alertDialogBuilder.setPositiveButton("yes",
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface arg0, int arg1) {
+                                    onDestroy();
+                                }
+                            });
+                    alertDialogBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            return;
+                        }
+                    });
+
+                    AlertDialog alertDialog = alertDialogBuilder.create();
+                    alertDialog.show();
+                }
+
+                else {
+                    Toast.makeText(this, "listen er tom og kan derfor ikke slettes!", Toast.LENGTH_SHORT)
+                            .show();
+                }
+                    return true;
+
+
 
             case R.id.action_email:
-                Toast.makeText(this, "About item clicked!", Toast.LENGTH_SHORT)
-                        .show();
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, "hey try my shoppinglist.");
+                sendIntent.setType("text/plain");
+                startActivity(sendIntent);
                 return true;
 
+            case R.id.btnSignIn:
+                menu login = new menu();
+
+                return true;
 
             //return super.onOptionsItemSelected(item);
         }
@@ -212,25 +250,55 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        //ALWAYS CALL THE SUPER METHOD - To be nice!
-        super.onSaveInstanceState(outState);
-        Log.d(TAG, "onSaveInstanceState");
-		/* Here we put code now to save the state */
-        outState.putStringArrayList("saved bag", bag);
-
-    }
-
-
-
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
         //adapter.cleanup();
         chrisshopinglistapp.removeValue();
+        p.setName(null);
+        p.setNumber(0);
+        Log.d(TAG, "onDestroy" + p);
+
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        //ALWAYS CALL THE SUPER METHOD - To be nice!
+        super.onSaveInstanceState(outState);
+        Log.d(TAG, "onSaveInstanceState" + p);
+      //  outState.putStringArrayList("saved bag", bag);
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d(TAG, "onStart");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d(TAG, "onPause");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d(TAG, "onStop");
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Log.d(TAG, "onRestart");
     }
 
 
